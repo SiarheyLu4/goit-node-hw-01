@@ -1,5 +1,3 @@
-// console.log("Welcom Lu4ik!!!");
-
 const contacts = require("./contacts")
 
 const invokeAction = async ({ action, id, name, email, phone }) => {
