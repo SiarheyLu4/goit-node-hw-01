@@ -4,9 +4,11 @@ const { nanoid } = require("nanoid");
 
 const contactsPath = path.join(__dirname, "db/contacts.json");
 
-console.log(contactsPath);
+const updateContacts = async (contacts) =>
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
-// TODO: задокументировать каждую функцию
+// console.log(contactsPath);
+
 async function listContacts() {
   const result = await fs.readFile(contactsPath, "utf-8");
   return JSON.parse(result)
@@ -19,7 +21,14 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId) {
-  // ...твой код
+  const contacts = await listContacts();
+  const index = contacts.findIndex(item => item.id === contactId);
+  if (index === -1) {
+    return null;
+  }
+  const [result] = contacts.splice(index, 1);
+  await updateContacts(contacts);
+  return result;
 }
 
 async function addContact({name, email, phone}) {
@@ -33,7 +42,7 @@ async function addContact({name, email, phone}) {
   };
 
   contacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2))
+  await updateContacts(contacts);
   return newContact;
 }
 
